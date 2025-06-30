@@ -5,7 +5,7 @@ import '../app_config/app_constants.dart';
 
 class DisplayPanel extends StatelessWidget {
   final String output;
-  final String input; // For displaying the current input line (optional, but good)
+  final String input;
 
   const DisplayPanel({
     super.key,
@@ -22,7 +22,7 @@ class DisplayPanel extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
-          // Optional: Display input before calculation
+   
           if (input.isNotEmpty && input != output)
             Text(
               input,
@@ -33,7 +33,7 @@ class DisplayPanel extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-          // Main output
+        
           Text(
             output,
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
