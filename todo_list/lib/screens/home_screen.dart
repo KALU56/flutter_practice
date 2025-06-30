@@ -1,9 +1,9 @@
-
 import 'package:flutter/material.dart';
+import '../models/note_model.dart';
 import '../screens/tabs/all_notes_tab.dart';
 import '../screens/tabs/sticky_notes_tab.dart';
 import '../screens/tabs/template_tab.dart';
-import '../models/note_model.dart';
+import '../screens/add_note_screen.dart';  // Import AddNoteScreen
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,8 +35,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     super.dispose();
   }
 
+  // Use direct MaterialPageRoute instead of pushNamed
   void navigateToAddNote({bool isSticky = false}) async {
-    final newNote = await Navigator.pushNamed(context, '/add-note');
+    final newNote = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const AddNoteScreen()),
+    );
     if (newNote != null && newNote is Note) {
       addNote(newNote, isSticky: isSticky);
     }
