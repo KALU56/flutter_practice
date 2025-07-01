@@ -12,11 +12,23 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final List<JournalEntry> _entries = [];
   String _selectedFilter = 'All';
+  bool _showTags = false; // controls showing/hiding the horizontal tags
 
   final List<String> _filterTags = [
     'All', 'Health', 'Spiritual', 'Education', 'Career',
-    'Vacation', 'Note', 'Thought'
+    'Vacation', 'Note', 'Thought',
   ];
+
+  final Map<String, IconData> _tagIcons = {
+    'All': Icons.grid_view,
+    'Health': Icons.favorite,
+    'Spiritual': Icons.self_improvement,
+    'Education': Icons.school,
+    'Career': Icons.work,
+    'Vacation': Icons.beach_access,
+    'Note': Icons.note,
+    'Thought': Icons.lightbulb,
+  };
 
   void _addEntry(JournalEntry entry) {
     setState(() {
@@ -44,24 +56,82 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('MyJournal'),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.menu_rounded),
+          onPressed: () {
+            setState(() {
+              _showTags = !_showTags;
+            });
+          },
+          tooltip: _showTags ? 'Hide tags' : 'Show tags',
+        ),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: DropdownButton<String>(
-              isExpanded: true,
-              value: _selectedFilter,
-              items: _filterTags.map((tag) {
-                return DropdownMenuItem(value: tag, child: Text(tag));
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedFilter = value!;
-                });
-              },
+          // "This is my space" text
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Text(
+              'This is my space',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
             ),
           ),
+
+          // Tag buttons horizontal scroll - toggle visible
+          if (_showTags)
+            SizedBox(
+              height: 52,
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                scrollDirection: Axis.horizontal,
+                itemCount: _filterTags.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final tag = _filterTags[index];
+                  final isSelected = tag == _selectedFilter;
+
+                  return ChoiceChip(
+                    labelPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _tagIcons[tag],
+                          size: 20,
+                          color: isSelected ? Colors.white : Colors.blue,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(tag,
+                            style: TextStyle(
+                              color: isSelected ? Colors.white : Colors.blue,
+                              fontWeight: FontWeight.w600,
+                            )),
+                      ],
+                    ),
+                    selected: isSelected,
+                    selectedColor: Colors.blue,
+                    backgroundColor: Colors.blue.shade50,
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          _selectedFilter = tag;
+                        });
+                      }
+                    },
+                  );
+                },
+              ),
+            ),
+
+          // Spacer between tags and entries
+          if (_showTags) const SizedBox(height: 12),
+
+          // Entries list (expanded to fill remaining space)
           Expanded(
             child: filteredEntries.isEmpty
                 ? const Center(
@@ -72,13 +142,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   )
                 : ListView.separated(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     itemCount: filteredEntries.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 16),
                     itemBuilder: (context, index) {
                       final entry = filteredEntries[index];
                       return Card(
                         elevation: 2,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -92,22 +164,33 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              Text(entry.description, style: const TextStyle(fontSize: 16)),
+                              Text(entry.description,
+                                  style: const TextStyle(fontSize: 16)),
                               const SizedBox(height: 8),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    '#${entry.tag}',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.blueAccent,
-                                      fontStyle: FontStyle.italic,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Icon(_tagIcons[entry.tag],
+                                          size: 16, color: Colors.blueAccent),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '#${entry.tag}',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.blueAccent,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   Text(
                                     _formatTimestamp(entry.timestamp),
-                                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
+                                    ),
                                   ),
                                 ],
                               ),
