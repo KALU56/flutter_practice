@@ -9,7 +9,6 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Top-right blue design
           Positioned(
             top: 0,
             right: 0,
@@ -18,14 +17,10 @@ class WelcomeScreen extends StatelessWidget {
               height: 250,
               decoration: const BoxDecoration(
                 color: Colors.blue,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(250),
-                ),
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(250)),
               ),
             ),
           ),
-
-          // Bottom-left blue design
           Positioned(
             bottom: 0,
             left: 0,
@@ -34,14 +29,10 @@ class WelcomeScreen extends StatelessWidget {
               height: 200,
               decoration: const BoxDecoration(
                 color: Colors.blue,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(200),
-                ),
+                borderRadius: BorderRadius.only(topRight: Radius.circular(200)),
               ),
             ),
           ),
-
-          // Center content
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
