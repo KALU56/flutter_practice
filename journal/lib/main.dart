@@ -11,6 +11,7 @@ class MyJournalApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // 👈 Add this line to hide the DEBUG banner
       title: 'MyJournal',
       theme: ThemeData(
         primarySwatch: Colors.blue,
