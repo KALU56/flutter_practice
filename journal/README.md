@@ -1,16 +1,31 @@
-# journal
+# MyJournal App
 
-A new Flutter project.
+A Flutter mobile app to create, view, edit, and delete journal entries with tags, timestamps, and notes.
+
+---
+
+## Features
+
+- Add journal entries with title, description, tag, source, and learnings.
+- Filter entries by tag.
+- Search entries by keyword.
+- View detailed entry with edit and delete options.
+- Clean UI with curved content containers and blue header.
+
+
+
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+- Flutter SDK installed ([installation guide](https://flutter.dev/docs/get-started/install))
+- An editor like VS Code or Android Studio
+- An emulator or physical device connected
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Installing
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Clone the repo:
+
+```bash
+git clone https://github.com/KALU56/flutter_practice.git

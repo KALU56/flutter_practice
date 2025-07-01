@@ -15,7 +15,6 @@ class DetailEntryScreen extends StatelessWidget {
   });
 
   String _formatTime(DateTime timestamp) {
-    // Format as "Today, HH:mm" and month as full name
     final month = _monthName(timestamp.month);
     return 'Today, ${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')} • $month';
   }
@@ -31,42 +30,105 @@ class DetailEntryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueAccent,  // blue background for header area
+      backgroundColor: Colors.blueAccent,  // Blue background for header
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // HEADER with blue background, title, time, month
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
-              child: Column(
+              padding: const EdgeInsets.fromLTRB(8, 24, 8, 24),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    entry.title,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  // Back arrow button
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  // Title + time vertically stacked
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.title,
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            const Icon(Icons.access_time, size: 18, color: Colors.white70),
+                            const SizedBox(width: 6),
+                            Text(
+                              _formatTime(entry.timestamp),
+                              style: const TextStyle(fontSize: 16, color: Colors.white70),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(Icons.access_time, size: 18, color: Colors.white70),
-                      const SizedBox(width: 6),
-                      Text(
-                        _formatTime(entry.timestamp),
-                        style: const TextStyle(fontSize: 16, color: Colors.white70),
-                      ),
-                    ],
+
+                  // Edit button
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.white, size: 26),
+                    onPressed: () async {
+                      final updated = await Navigator.push<JournalEntry>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => AddEntryScreen(existingEntry: entry),
+                        ),
+                      );
+                      if (updated != null) {
+                        onUpdate(updated);
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+
+                  // Delete button
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.white, size: 26),
+                    onPressed: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text('Delete Entry'),
+                          content: const Text('Are you sure you want to delete this entry?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Cancel'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: const Text('Delete'),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      if (confirmed == true) {
+                        onDelete();
+                        Navigator.pop(context);
+                      }
+                    },
                   ),
                 ],
               ),
             ),
           ),
 
-          // CONTENT container below with curved top corners
+          // Content container with curved top corners
           Expanded(
             child: Container(
               width: double.infinity,
@@ -108,7 +170,7 @@ class DetailEntryScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
 
-                    // Source
+                    // Source (if available)
                     if (entry.source.isNotEmpty) ...[
                       const Text(
                         'Source',
@@ -125,7 +187,7 @@ class DetailEntryScreen extends StatelessWidget {
                       const SizedBox(height: 20),
                     ],
 
-                    // I Learn Today
+                    // I Learn Today (if available)
                     if (entry.learnings.isNotEmpty) ...[
                       const Text(
                         'I Learn Today',

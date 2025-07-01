@@ -59,10 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('MyJournal'),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {},
-        ),
+        
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
